@@ -19,7 +19,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DATABASE_DB,
       entities: ['dist/**/*.entity.js'],
       synchronize: true,
-      logging: true,
+      // logging: true,
     }),
     AuthModule,
   ],
