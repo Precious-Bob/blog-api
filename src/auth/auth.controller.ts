@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { signinDto, signupDto } from './dto';
@@ -19,6 +21,7 @@ export class AuthController {
     return this.authService.signup(signupDto);
   }
   @Post('signin')
+  @HttpCode(HttpStatus.OK)
   signin(@Body() signinDto: signinDto) {
     return this.authService.signin(signinDto);
   }
