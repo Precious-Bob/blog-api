@@ -9,9 +9,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Userentity } from './entities/users.entity';
 import { Repository } from 'typeorm';
 import * as argon from 'argon2';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class AuthService {
   constructor(
+    private jwt: JwtService,
+    private config: ConfigService,
     @InjectRepository(Userentity) private userRepo: Repository<Userentity>,
   ) {}
 
@@ -19,7 +23,8 @@ export class AuthService {
     try {
       const user = this.userRepo.create(dto);
       await user.save();
-      return user;
+      console.log(user);
+      return this.signToken(user.id, user.email);
     } catch (e) {
       if (e.code === '23505') {
         throw new ConflictException('Credentials already exists');
@@ -57,7 +62,8 @@ export class AuthService {
 
       const validPassword = await argon.verify(user.password, password);
       if (!validPassword) throw new NotFoundException('Credentials incorrect');
-      return user;
+      console.log(user);
+      return this.signToken(user.id, user.email);
     } catch (e) {
       throw e;
     }
@@ -79,19 +85,37 @@ export class AuthService {
     // }
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async signToken(
+    userId: string,
+    email: string,
+  ): Promise<{ access_token: string }> {
+    const payload = {
+      sub: userId,
+      email,
+    };
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn: '10m',
+      secret: this.config.get('JWT_SECRET'),
+    });
+    return {
+      access_token: token,
+    };
   }
+  // async signToken(
+  //   userId: string,
+  //   email: string,
+  // ): Promise<{ access_token: string }> {
+  //   const payload = {
+  //     sub: userId,
+  //     email,
+  //   };
+  //   const token = await this.jwt.signAsync(payload, {
+  //     expiresIn: '60m',
+  //     secret: this.config.get('JWT_SECRET'),
+  //   });
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
+  //   return {
+  //     access_token: token,
+  //   };
   // }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }
