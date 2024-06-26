@@ -23,7 +23,6 @@ export class AuthService {
     try {
       const user = this.userRepo.create(dto);
       await user.save();
-      console.log(user);
       return this.signToken(user.id, user.email);
     } catch (e) {
       if (e.code === '23505') {
