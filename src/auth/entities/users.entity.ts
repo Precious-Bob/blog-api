@@ -36,3 +36,5 @@ export class Userentity extends AbstractEntity {
   //   return instanceToPlain(this);
   // }
 }
+
+// I can't use the id in writing queries(findone(id) because id is in the inherited class)

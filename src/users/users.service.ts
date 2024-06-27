@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UpdateUserDto } from 'src/auth/dto';
 import { Userentity } from 'src/auth/entities/users.entity';
 import { Repository } from 'typeorm';
 
@@ -9,7 +10,14 @@ export class UsersService {
     @InjectRepository(Userentity) private userRepo: Repository<Userentity>,
   ) {}
 
-  async findByUsername(username: string): Promise<Userentity> {
-    return this.userRepo.findOne({ where: { username } });
+  async findCurrentUser(id: string): Promise<Userentity> {
+    return this.userRepo.findOneOrFail({ where: { id } });
+  }
+
+  async updateCurrentUser(id: string, dto: UpdateUserDto) {
+    const updatedUser = await this.userRepo.update(id, dto);
+    console.log( { success: updatedUser.affected > 0 })
+    return this.findCurrentUser(id);
+
   }
 }
