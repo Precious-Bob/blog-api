@@ -14,13 +14,14 @@ export class UsersController {
   // the custom GetUser decorator fetches the user details from the jwt token (made global in the auth module)
   // findCurrentuser(@GetUser() { username }: Userentity) {
   //   return this.usersService.findByUsername(username)};
-  findById(@GetUser() user: Userentity) {
-    return this.usersService.findCurrentUser(user.id);
+  findCurrentUser(@GetUser() { username }: Userentity) {
+    return this.usersService.findByUsername(username);
   }
 
-  @Put()
+  @Put('me')
   @UseGuards(jwtGuard)
-  update(@GetUser() user: Userentity, @Body() dto: UpdateUserDto) {
+  updateCurrentUser(@GetUser() user: Userentity, @Body() dto: UpdateUserDto) {
     return this.usersService.updateCurrentUser(user.id, dto);
   }
 }
+
