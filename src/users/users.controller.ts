@@ -15,13 +15,21 @@ export class UsersController {
   // findCurrentuser(@GetUser() { username }: Userentity) {
   //   return this.usersService.findByUsername(username)};
   findCurrentUser(@GetUser() { username }: Userentity) {
-    return this.usersService.findByUsername(username);
+    const profile = this.usersService.findByUsername(username);
+    return { profile };
+  }
+
+  @Get()
+  @UseGuards(jwtGuard)
+  findAllUsers() {
+    const profiles = this.usersService.findAllUsers();
+    return { profiles };
   }
 
   @Put('me')
   @UseGuards(jwtGuard)
   updateCurrentUser(@GetUser() user: Userentity, @Body() dto: UpdateUserDto) {
-    return this.usersService.updateCurrentUser(user.id, dto);
+    const updatedProfile = this.usersService.updateCurrentUser(user.id, dto);
+    return { updatedProfile };
   }
 }
-

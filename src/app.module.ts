@@ -24,6 +24,7 @@ import { UsersModule } from './users/users.module';
         database: config.get<string>('DB_NAME'),
         entities: ['dist/**/*.entity.js'],
         synchronize: true,
+        dropSchema: true,
         // logging: true,
       }),
     }),
