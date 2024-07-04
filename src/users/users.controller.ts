@@ -3,8 +3,7 @@ import { UsersService } from './users.service';
 import { GetUser } from 'src/auth/user.decorator';
 import { jwtGuard } from 'src/auth/guards';
 import { Userentity } from 'src/auth/entities/users.entity';
-import { UpdateUserDto } from 'src/auth/dto';
-
+import { UpdateUserDto } from './dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
