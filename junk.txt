@@ -1,0 +1,55 @@
+pm.test("Status code is 200 - pm.response", function () {
+    pm.response.to.have.status(201); // written to fail
+});
+
+pm.test("Response time is less than 200ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(200);
+});
+
+pm.test("Content-Type is present", function () {
+    pm.response.to.have.header("Content-Type");
+});
+
+pm.test("Content-Type is JSON", function () {
+    pm.response.to.be.json;
+})
+
+pm.test("Returns 7 char alphanumeric id", function () {
+    let jsonData = pm.response.json();
+    pm.expect(jsonData.form.someHash).to.match(/^[a-z0-9]{7}$/);
+});
+
+let jsonResponse = pm.response.json();
+
+pm.test("Response should be a parsable JSON", function() {
+    pm.expect(jsonResponse).to.be.ok;
+});
+
+pm.test("Response body should be an object", function() {
+    pm.expect(jsonResponse).to.be.an('object');
+});
+
+pm.test("Response body should be in the correct format", function() {
+    pm.expect(jsonResponse.args).to.be.a('object');
+    pm.expect(jsonResponse.data).to.be.a('string');
+    pm.expect(jsonResponse.files).to.be.a('object');
+    pm.expect(jsonResponse.form).to.be.a('object');
+    pm.expect(jsonResponse.headers).to.be.a('object');
+});
+
+pm.test("Does not return password", function () {
+    let jsonData = pm.response.json();
+    pm.expect(jsonData.form.customerName).to.not.include("examplePassword");
+});
+
+https://learning.postman.com/docs/writing-scripts/script-references/variables-list/
+
+pm.test("An access token is returned", () => {
+    pm.expect(pm.response.json()).to.have.property('token')
+    pm.expect(pm.response.json().token).to.be.a('string')
+    // Set the collection-scope "token" variable to the token received from the API
+    // This lets us use it in other requests
+    pm.collectionVariables.set('token', pm.response.json().token)
+})
+
+{{baseUrl}}/unregister
