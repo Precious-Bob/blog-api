@@ -11,7 +11,7 @@ import {
 import { AbstractEntity } from './abstract-entity';
 import { Exclude, classToPlain, instanceToPlain } from 'class-transformer';
 import * as argon from 'argon2';
-import { ArticlesEntity } from './articles.entity';
+import { ArticlesEntity } from '../../articles/entities/articles.entity';
 
 @Entity()
 export class Userentity extends AbstractEntity {

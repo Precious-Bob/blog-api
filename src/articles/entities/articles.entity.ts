@@ -3,14 +3,14 @@ import {
   BeforeInsert,
   Column,
   Entity,
-  JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   RelationCount,
 } from 'typeorm';
-import { AbstractEntity } from './abstract-entity';
+import { AbstractEntity } from 'src/auth/entities/abstract-entity';
 import * as slugify from 'slug';
-import { Userentity } from './users.entity';
+import { Userentity } from 'src/auth/entities/users.entity';
 
 @Entity()
 export class ArticlesEntity extends AbstractEntity {
@@ -29,11 +29,12 @@ export class ArticlesEntity extends AbstractEntity {
   @RelationCount((article: ArticlesEntity) => article.favouritedBy)
   favouritesCount: number;
 
+
   @ManyToOne((type) => Userentity, (user) => user.articles, { eager: true })
   author: Userentity;
 
   @ManyToMany((type) => Userentity, (user) => user.favourites, { eager: true })
-  @JoinColumn()
+  @JoinTable()
   favouritedBy: Userentity[];
 
   @Column('simple-array')
@@ -41,10 +42,12 @@ export class ArticlesEntity extends AbstractEntity {
 
   toArticle(user: Userentity) {
     let favourited = null;
-    if (user) favourited = this.favouritedBy.includes(user);
+    if (user && this.favouritedBy)
+      favourited = this.favouritedBy.map((user) => user.id).includes(user.id);
     delete this.favouritedBy;
     return { ...favourited };
   }
+ 
 
   @BeforeInsert()
   generateSlug() {
@@ -53,4 +56,14 @@ export class ArticlesEntity extends AbstractEntity {
       '-' +
       ((Math.random() * Math.pow(36, 6)) | 0).toString(36);
   }
+}
+export interface FindFeedQuery {
+  limit?: number;
+  offset?: number;
+}
+
+export interface FindAllQuery extends FindFeedQuery {
+  tag?: string;
+  author?: string;
+  favourited?: string;
 }
