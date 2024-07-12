@@ -16,6 +16,13 @@ export class CommentsService {
     private readonly articleRepo: Repository<ArticlesEntity>,
   ) {}
 
+  async createComment(user: Userentity, data: CreateCommentDto) {
+    const comment = this.commentRepo.create(data);
+    comment.author = user;
+    await comment.save();
+    return this.commentRepo.findOne({ where: { body: data.body } });
+  }
+
   findByArticleSlug(slug: string) {
     return this.articleRepo.find({ where: { slug: slug } });
   }

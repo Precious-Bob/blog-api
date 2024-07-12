@@ -92,6 +92,6 @@ export class ArticlesService {
       (fav) => fav.id !== user.id,
     );
     await article.save();
-    return article.toArticle(user);
+    return (await this.findBySlug(slug)).toArticle(user)
   }
 }
