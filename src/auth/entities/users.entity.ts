@@ -12,6 +12,7 @@ import { AbstractEntity } from './abstract-entity';
 import { Exclude, classToPlain, instanceToPlain } from 'class-transformer';
 import * as argon from 'argon2';
 import { ArticlesEntity } from '../../articles/entities/articles.entity';
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 
 @Entity()
 export class Userentity extends AbstractEntity {
@@ -44,6 +45,9 @@ export class Userentity extends AbstractEntity {
 
   @ManyToMany(() => Userentity, (user) => user.followers)
   followee: Userentity[];
+
+  @OneToMany((type) => CommentEntity, (comment) => comment.author)
+  comments: CommentEntity[];
 
   @BeforeInsert()
   async hashedPassword() {

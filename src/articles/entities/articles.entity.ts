@@ -6,11 +6,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   RelationCount,
 } from 'typeorm';
 import { AbstractEntity } from 'src/auth/entities/abstract-entity';
 import * as slugify from 'slug';
 import { Userentity } from 'src/auth/entities/users.entity';
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 
 @Entity()
 export class ArticlesEntity extends AbstractEntity {
@@ -29,7 +31,6 @@ export class ArticlesEntity extends AbstractEntity {
   @RelationCount((article: ArticlesEntity) => article.favouritedBy)
   favouritesCount: number;
 
-
   @ManyToOne((type) => Userentity, (user) => user.articles, { eager: true })
   author: Userentity;
 
@@ -40,6 +41,9 @@ export class ArticlesEntity extends AbstractEntity {
   @Column('simple-array')
   taglist: string[];
 
+  @OneToMany((type) => CommentEntity, (comment) => comment.article)
+  comments: CommentEntity[];
+
   toArticle(user: Userentity) {
     let favourited = null;
     if (user && this.favouritedBy)
@@ -47,7 +51,6 @@ export class ArticlesEntity extends AbstractEntity {
     delete this.favouritedBy;
     return { ...favourited };
   }
- 
 
   @BeforeInsert()
   generateSlug() {
